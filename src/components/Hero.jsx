@@ -54,8 +54,9 @@ const Hero = () => {
 
           <p className="text-gray-400 text-justify text-sm leading-relaxed max-w-lg mb-8">
             Assistant Professor at KCC Institute of Technology and Management,
-            currently pursuing a PhD in Computer Science & Engineering
-            (Artificial Intelligence) at Invertis University. Dedicated to
+            currently pursuing a PhD in Computer Science & Engineering at
+            Invertis University with specialization in Cryptography & Network
+            Security and Artificial Intelligence. Dedicated to
             integrating academic insights with practical applications and
             empowering students to thrive in a rapidly evolving tech landscape.
           </p>
