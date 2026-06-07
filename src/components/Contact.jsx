@@ -1,0 +1,220 @@
+import {useState, useRef} from "react"
+import {motion} from "framer-motion"
+import {FiMail, FiMapPin} from "react-icons/fi"
+import {FaLinkedin} from "react-icons/fa"
+import emailjs from "@emailjs/browser"
+
+const SERVICE_ID = "service_08f9yyh"
+const TEMPLATE_ID = "template_e1iynw9"
+const PUBLIC_KEY = "r5K5Q7cThT3vaszBo"
+
+const Contact = () => {
+  const [form, setForm] = useState({name: "", email: "", message: ""})
+  const [status, setStatus] = useState("")
+  const [loading, setLoading] = useState(false)
+  const lastEmailRef = useRef("")
+
+  const handleChange = (e) => {
+    setForm({...form, [e.target.name]: e.target.value})
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/
+
+    if (!form.name || !form.email || !form.message) {
+      setStatus("empty")
+      return
+    }
+
+    if (!emailRegex.test(form.email)) {
+      setStatus("invalid")
+      return
+    }
+
+    if (form.email === lastEmailRef.current) {
+      setStatus("duplicate")
+      return
+    }
+
+    setLoading(true)
+    setStatus("")
+
+    try {
+      await emailjs.send(
+        SERVICE_ID,
+        TEMPLATE_ID,
+        {
+          from_name: form.name,
+          from_email: form.email,
+          message: form.message,
+        },
+        PUBLIC_KEY,
+      )
+      lastEmailRef.current = form.email
+      setStatus("success")
+      setForm({name: "", email: "", message: ""})
+    } catch {
+      setStatus("error")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <section
+      id="contact"
+      className="py-24 bg-[#0a0a0f] relative overflow-hidden"
+    >
+      <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="max-w-6xl mx-auto px-6">
+        <motion.div
+          className="text-center mb-16"
+          initial={{opacity: 0, y: 30}}
+          whileInView={{opacity: 1, y: 0}}
+          transition={{duration: 0.6}}
+          viewport={{once: true}}
+        >
+          <span className="text-cyan-400 text-sm font-medium tracking-widest uppercase">
+            Contact
+          </span>
+          <h2 className="text-3xl md:text-4xl font-bold text-white mt-2">
+            Get In Touch
+          </h2>
+          <p className="text-gray-400 text-sm mt-3">
+            Have a question or want to collaborate? Feel free to reach out.
+          </p>
+          <div className="w-12 h-1 bg-cyan-400 mx-auto mt-4 rounded-full" />
+        </motion.div>
+
+        <div className="flex flex-col md:flex-row gap-12">
+          <motion.div
+            className="flex-1 flex flex-col gap-6"
+            initial={{opacity: 0, x: -40}}
+            whileInView={{opacity: 1, x: 0}}
+            transition={{duration: 0.6}}
+            viewport={{once: true}}
+          >
+            <div className="flex items-start gap-4 bg-white/5 border border-white/10 rounded-xl p-5">
+              <div className="text-cyan-400 text-xl mt-1">
+                <FiMail />
+              </div>
+              <div>
+                <p className="text-white text-sm font-semibold">Email</p>
+                <p className="text-gray-400 text-sm mt-1">
+                  er.sarita2014@gmail.com
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4 bg-white/5 border border-white/10 rounded-xl p-5">
+              <div className="text-cyan-400 text-xl mt-1">
+                <FaLinkedin />
+              </div>
+              <div>
+                <p className="text-white text-sm font-semibold">LinkedIn</p>
+                <button
+                  onClick={() =>
+                    window.open(
+                      "https://www.linkedin.com/in/sarita-singh-b25575105",
+                      "_blank",
+                    )
+                  }
+                  className="text-cyan-400 text-sm mt-1 hover:underline text-left cursor-pointer"
+                >
+                  linkedin.com/in/sarita-singh-b25575105
+                </button>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4 bg-white/5 border border-white/10 rounded-xl p-5">
+              <div className="text-cyan-400 text-xl mt-1">
+                <FiMapPin />
+              </div>
+              <div>
+                <p className="text-white text-sm font-semibold">Institution</p>
+                <p className="text-gray-400 text-sm mt-1">
+                  KCC Institute of Technology and Management, Greater Noida
+                  <br />
+                  <span className="text-gray-500">Bareilly, Uttar Pradesh, India</span>
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            className="flex-1"
+            initial={{opacity: 0, x: 40}}
+            whileInView={{opacity: 1, x: 0}}
+            transition={{duration: 0.6}}
+            viewport={{once: true}}
+          >
+            <div className="flex flex-col gap-4">
+              <input
+                type="text"
+                name="name"
+                placeholder="Your Name"
+                value={form.name}
+                onChange={handleChange}
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-cyan-400/50 transition-colors duration-200"
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Your Email"
+                value={form.email}
+                onChange={handleChange}
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-cyan-400/50 transition-colors duration-200"
+              />
+              <textarea
+                name="message"
+                placeholder="Your Message"
+                value={form.message}
+                onChange={handleChange}
+                rows={5}
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-cyan-400/50 transition-colors duration-200 resize-none"
+              />
+              <button
+                onClick={handleSubmit}
+                disabled={loading}
+                className="w-full py-3 bg-cyan-400 text-black text-sm font-semibold rounded-xl hover:bg-cyan-300 transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? "Sending..." : "Send Message"}
+              </button>
+
+              {status === "success" && (
+                <p className="text-green-400 text-sm text-center">
+                  ✅ Message sent!
+                </p>
+              )}
+              {status === "invalid" && (
+                <p className="text-yellow-400 text-sm text-center">
+                  ⚠️ Enter a valid Gmail address.
+                </p>
+              )}
+              {status === "duplicate" && (
+                <p className="text-yellow-400 text-sm text-center">
+                  ⚠️ Already sent from this email.
+                </p>
+              )}
+              {status === "empty" && (
+                <p className="text-yellow-400 text-sm text-center">
+                  ⚠️ Fill in all fields.
+                </p>
+              )}
+              {status === "error" && (
+                <p className="text-red-400 text-sm text-center">
+                  ❌ Try again.
+                </p>
+              )}
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+export default Contact
